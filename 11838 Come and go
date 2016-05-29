@@ -1,0 +1,134 @@
+/*Program Developed By oculto*/
+//Strongly connected components
+ 
+#include<iostream>
+#include<algorithm>
+#include<math.h>
+#include<vector>
+#include<utility>
+#include<string.h>
+#include<cstdio>
+ 
+#define MOD 1000000007
+#define FOR(i,a,n) for(i=a;i<n;i++)
+#define nl printf("\n")
+#define MAX_INT 2147483647
+using namespace std;
+ 
+vector<bool> visited;
+vector<int> stack;
+class graph{
+ 
+	int v;
+	vector< vector<int> > e;
+ 
+ 
+	public:
+	 graph(int x)
+	 {
+	 	v=x;
+	 	e.resize(v);
+	 	//visited.resize(x);
+	 }
+ 
+	 int addpath(int x,int y,int a)
+	 {
+	 	e[x].push_back(y);
+	 	if(a>1)
+	 	e[y].push_back(x);
+	 }
+ 
+	 int dfs(int x)
+	 {
+	 	visited[x]=1;
+	 	for(int i=0;i<e[x].size();i++)
+	 	{
+	 		if(!visited[e[x][i]])
+			 dfs(e[x][i]);
+ 
+		}
+		stack.push_back(x);
+	 }
+ 
+	 graph transpose()
+	 {
+	 	graph g(v);
+	 	for(int i=0;i<v;i++)
+	 	{
+	 		for(int j=0;j<e[i].size();j++)
+	 		{
+	 			g.addpath(e[i][j],i,1);
+			 }
+ 
+		 }
+		 return g;
+ 
+	 }
+ 
+	 int dfs2(int x)
+	 {  
+		visited[x]=1;
+		for(int i=0;i<e[x].size();i++)
+		{
+			if(!visited[e[x][i]])
+			dfs2(e[x][i]);
+		}
+	}
+ 
+ 
+ 
+};
+ 
+ 
+ 
+int main()
+{
+int n,m,x,y,i,t;
+while(1)
+{   scanf("%d %d",&n,&m);
+	if(n==0&&m==0)
+	break;	
+	visited.clear();
+		graph g(n);
+		visited.resize(n);
+		for(i=0;i<m;i++)
+	{
+		scanf("%d %d %d",&x,&y,&t);
+		g.addpath(x-1,y-1,t);
+	}
+ 
+	for(i=0;i<n;i++)
+	{
+		if(!visited[i])
+		g.dfs(i);
+	}
+ 
+	graph g2=g.transpose();
+ 
+	for(i=0;i<n;i++)
+	visited[i]=0;	
+ 
+	int flag=0;
+ 
+	while(stack.size())
+	{
+		int v=stack.back();
+		stack.pop_back();
+		if(!visited[v])
+		{
+			flag++;
+			g2.dfs2(v);
+		}	
+	}	
+ 
+	if(flag>1)
+	{
+		printf("0\n");
+	}
+	else
+	printf("1\n");
+}
+ 
+ 
+return 0;
+}
